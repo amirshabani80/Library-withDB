@@ -1,93 +1,131 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Scanner;
 
 public class MemberService {
-
-    private static List<MemberDTO> memberList = new ArrayList<>();
-
     public static void addMember() {
-
-        Scanner scanner = new Scanner(System.in);
-
-        MemberDTO newMember = new MemberDTO();
-        System.out.println("please Enter First & Last name");
-        newMember.setName(scanner.nextLine());
-        System.out.println("Enter Birthday (like: 1998/11/23)");
-        newMember.setBirthday(scanner.next());
-        System.out.println("please enter number (like 0933++++323) ");
-        newMember.setNumber(scanner.next());
-
-        memberList.add(newMember);
-
-        System.out.println("new member added \n Your ID:" + newMember.getId());
+        try {
+            Scanner scanner = new Scanner(System.in);
+            Connection conn = DBConnection.getConnection();
+            System.out.println("Enter full name");
+            String name = scanner.nextLine();
+            System.out.println("Enter birthday (like 2022/12/14)");
+            String birthday = scanner.nextLine();
+            System.out.println("Enter phone number");
+            String phoneNumber = scanner.nextLine();
+            String sql = "INSERT INTO members (name,birthday,phone_number) VALUES (?,?,?)";
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, name);
+            ps.setString(2, birthday);
+            ps.setString(3, phoneNumber);
+            ps.executeUpdate();
+            System.out.println("Member added successfully");
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {//next pointer
+                int generatedId = rs.getInt(1);
+                System.out.println("ID: " + generatedId + "\n----------------------------------------------\n" +
+                        "Name: " + name + " | Birthday: " + birthday + " | Phone number: " + phoneNumber);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void showMembers() {
-        if (MemberService.memberList.isEmpty()) {
-            System.out.println("The Member List is Empty");
-        } else
-            for (MemberDTO s : memberList) {
-                System.out.println(s.getInfo());
+        try {
+            Connection conn = DBConnection.getConnection();
+            String sql = "SELECT * FROM members WHERE name IS NOT null";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                System.out.println("ID: " + rs.getInt("id") + "|Name: " + rs.getString("name") + "|Birthday: "
+                        + rs.getString("birthday") + "|Phone number: " + rs.getString("phone_number"));
             }
-    }
-
-    public static void deleteMember() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("<<Enter Member ID>>");
-        int idInput = scanner.nextInt();
-
-        MemberDTO memberDTO = findById(idInput);
-        if (memberDTO != null) {
-            memberList.remove(memberDTO);
-            System.out.println(memberDTO.getInfo());
-            System.out.println("Member with ID:" + memberDTO.getId() + " Removed");
-        } else {
-            System.out.println("Invalid ID!!");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-/**
- * method man ke pak mikard
- */
-        /*for (MemberDTO s : memberList) {
-            if (s.getId() == idInput) {
-                memberList.remove(s);
-                System.out.println(s.getInfo());
-                System.out.println("Member with ID:" + s.getId() + " Removed");
-                return;
-            }
-        }
-        System.out.println("peyda nashod");*/
     }
 
     public void editMember() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Please Enter ID");
-        int id = Integer.parseInt(scanner.next());
-
-        MemberDTO memberDTO = findById(id);
-        if (memberDTO != null) {
-
-            System.out.println("Enter Member name");
-            memberList.get(id).setName(scanner.next());
-            System.out.println("Enter Member Birthday (like 2000/02/25)");
-            memberList.get(id).setBirthday(scanner.next());
-            System.out.println("Enter Member Number (like: 0912xxxx263)");
-            memberList.get(id).setNumber(scanner.next());
-            System.out.println(memberList.get(id).getInfo());
-        } else
-            System.out.println("Invalid ID!!!");
-    }
-
-    /**
-     *     method id mohandes karimipoor
-     */
-   static MemberDTO findById(int id) {
-        for (MemberDTO memberDTO : memberList) {
-            if (memberDTO.getId() == id) {
-                return memberDTO;
+        try {
+            Connection conn = DBConnection.getConnection();
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Please Enter ID");
+            int id = scanner.nextInt();
+            String sql = "SELECT * FROM members WHERE id =?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                System.out.println("Current member info:");
+                System.out.println("Name: " + rs.getString("name") + "| Birthday: " + rs.getString("birthday") +
+                        "| Phone number: " + rs.getString("phone_number") + "\n-------------------------------------------");
+                System.out.println("Enter The Name:");
+                String newName = scanner.nextLine();
+                System.out.println("Enter birthday (like 2022/12/14)");
+                String newBirthday = scanner.next();
+                System.out.println("Enter phone number");
+                String newPhoneNumber = scanner.nextLine();
+                String updateSql = "UPDATE members SET name = ?, birthday = ?, phone_number = ?";
+                PreparedStatement newPs = conn.prepareStatement(updateSql);
+                newPs.setString(1, newName);
+                newPs.setString(2, newBirthday);
+                newPs.setString(3, newPhoneNumber);
+                int updatedRows = newPs.executeUpdate();
+                if (updatedRows > 0) {
+                    System.out.println("Member updated successfully");
+                } else {
+                    System.out.println("Failed to update the Member!!");
+                }
+            } else {
+                System.out.println("Member not found!!");
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return null;
+    }
+    public static void deleteMember() {
+        try {
+            Connection conn = DBConnection.getConnection();
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Enter ID");
+            int id = scanner.nextInt();
+            scanner.nextLine();
+            String sql = "SELECT * FROM members WHERE id=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                System.out.println("ID: " + rs.getInt("id") + "|Name: " + rs.getString("name") + "|Birthday: "
+                        + rs.getString("birthday") + "|Phone number: " + rs.getString("phone_number"));
+                System.out.println("If you are sure enter <<Y>>");
+                String sure = scanner.nextLine().toUpperCase();
+                if (sure.equals("Y")) {
+                    String delSql = "DELETE FROM members WHERE id=?";
+                    PreparedStatement delPs = conn.prepareStatement(delSql);
+                    delPs.setInt(1, id);
+                    int rowsDeleted = delPs.executeUpdate();
+                    if (rowsDeleted > 0) {
+                        System.out.println("Member deleted successfully");
+                    } else {
+                        System.out.println("Delition failed!!");
+                    }
+
+                    delPs.close();
+                } else {
+                    System.out.println("Delotion canceled");
+                }
+
+            } else {
+                System.out.println("Member not found!!");
+            }
+            rs.close();
+            ps.close();
+            conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

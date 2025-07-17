@@ -1,77 +1,189 @@
-import java.sql.SQLOutput;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class BookService {
-    static ArrayList<BookDTO> booksList = new ArrayList<>();
     static Scanner scanner = new Scanner(System.in);
 
     public void addBook() {
-        System.out.println("Enter The Book Name");
-        BookDTO newBook = new BookDTO(scanner.next());
-        System.out.println("Enter The Writer name");
-        newBook.setWriter(scanner.next());
-        System.out.println("Enter The Price");
-        newBook.setPrice(scanner.nextInt());
-        newBook.setStatus(BookDTO.Status.AVAILABLE);
-        System.out.println("New Book Added: " + newBook.getInfo());
-        booksList.add(newBook);
-    }
+        try (Connection conn = DBConnection.getConnection()) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Enter Book Name:");
+            String name = scanner.nextLine();
 
-    public void searchBook() {
-        if (booksList.isEmpty()) {
-            System.out.println("The Books List is Empty");
-        } else if (booksList.get(0) != null) {
-            System.out.println("Enter The Book Name");
-            BookDTO bookDTO = findBookByName(scanner.next());
-            System.out.println(bookDTO.getInfo());
-        } else System.out.println("Invalid Book!!");
-    }
+            System.out.println("Enter Writer Name:");
+            String writer = scanner.nextLine();
 
-    public void editBook() {
-        System.out.println("Enter the Book Name Please");
-        BookDTO bookService = findBookByName(scanner.next());
-        System.out.println(bookService.getInfo()+"\n --------------------------------------");
-        System.out.println("Enter New Name");
-        bookService.setName(scanner.next());
-        System.out.println("Enter New WriterNAme");
-        bookService.setWriter(scanner.next());
-        System.out.println("Enter New Price");
-        bookService.setPrice(scanner.nextInt());
-        System.out.println("New Book:" + bookService.getInfo());
+            System.out.println("Enter Price:");
+            int price = scanner.nextInt();
+            scanner.nextLine();
+
+            String status = "AVAILABLE";
+
+            String sql = "INSERT INTO books (name, writer, price, status) VALUES (?, ?, ?, ?)";
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, name);
+            ps.setString(2, writer);
+            ps.setInt(3, price);
+            ps.setString(4, status);
+
+            ps.executeUpdate();
+            System.out.println("Book added successfully.");
+            ResultSet rs = ps.getGeneratedKeys();//getId after add
+            if (rs.next()) {//next pointer
+                int generatedId = rs.getInt(1);
+                System.out.println("The Book ID: " + generatedId + "\n--------------------------------------------- "
+                        + "\n Book name: " + name + "|Writer : " + writer + "|prise: " + price);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void showBooksList() {
-        if (booksList.isEmpty()) {
-            System.out.println("THE LIST IS EMPTY!!");
+        try {
+            Connection conn = DBConnection.getConnection();
+            String sql = "SELECT * FROM books WHERE name is not null";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String name = rs.getString("name");
+                String writer = rs.getString("writer");
+                int price = rs.getInt("price");
+                String status = rs.getString("status");
 
-        } else
-            for (BookDTO bookDTO : booksList) {
-                System.out.println(bookDTO.getInfo());
+                System.out.println("Book: " + name +
+                        " | Writer: " + writer +
+                        " | Price: " + price +
+                        " | Status: " + status +
+                        " |ID: " + rs.getInt("id"));
             }
-    }
-    public void deleteBook() {
-        System.out.println("Enter the Book Name:");
-        BookDTO bookDTO = findBookByName(scanner.nextLine());
-        booksList.remove(bookDTO);
-        System.out.println("Book "+"<< " +bookDTO.getName()+" >>"+ " Deleted");
-
-    }
-
-    /**
-     * find ook by name
-     *
-     * @param bookName
-     * @return
-     */
-   static BookDTO findBookByName(String bookName) {
-        for (BookDTO bookDTO : booksList) {
-            if (bookDTO.getName().equalsIgnoreCase(bookName)) {
-                return bookDTO;
-
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return null;
     }
+
+    public void editBook() {
+        try {
+            Connection conn = DBConnection.getConnection();
+            System.out.println("Enter the Book Name Please");
+            String name = scanner.nextLine();
+            String sql = "SELECT * FROM books WHERE LOWER(name) = LOWER(?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("Current Book Info:");
+                System.out.println("Name: " + rs.getString("name"));
+                System.out.println("Writer: " + rs.getString("writer"));
+                System.out.println("Price: " + rs.getInt("price"));
+                System.out.println("Status: " + rs.getString("status"));
+                System.out.println("----------------------------------");
+
+                System.out.println("Enter The Books Name:");
+                String newName = scanner.nextLine();
+                System.out.println("Enter Writer Name:");
+                String newWriter = scanner.nextLine();
+
+                System.out.println("Enter Price:");
+                int newPrice = scanner.nextInt();
+                scanner.nextLine();
+                System.out.println("Enter new status (AVAILABLE / NEEDREPARE / BORROW):");
+                String newStatus = scanner.nextLine().toUpperCase();
+
+                String updateSql = "UPDATE books SET name = ?, writer = ?, price = ?, status = ? WHERE name = ?";
+
+                PreparedStatement newPs = conn.prepareStatement(updateSql);
+                newPs.setString(1, newName);
+                newPs.setString(2, newWriter);
+                newPs.setInt(3, newPrice);
+                newPs.setString(4, newStatus);
+                newPs.setString(5, name);
+                int updatedRows = newPs.executeUpdate();
+                if (updatedRows > 0) {
+                    System.out.println("Book updated successfully");
+                } else {
+                    System.out.println("Failed to update the book!!");
+                }
+            } else {
+                System.out.println("Book not found!!");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void deleteBook() {
+        Scanner scanner = new Scanner(System.in);
+        try {
+            Connection conn = DBConnection.getConnection();
+            System.out.println("Enter the book name");
+            String bookName = scanner.nextLine();
+            String sql = "SELECT * FROM books WHERE LOWER(name)=LOWER (?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, bookName);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                System.out.println("Name : " + rs.getString("name") + "|Writer: " + rs.getString("writer") + "|Prise: "
+                        + rs.getInt("price") + "|Status: " + rs.getString("status") + "|ID: " + rs.getInt("id"));
+                System.out.println("If you are sure enter <<Y>>");
+                String sure = scanner.nextLine().toUpperCase();
+                if (sure.equals("Y")) {
+                    String deleteSql = "DELETE FROM books WHERE LOWER(name)=LOWER(?)";
+                    PreparedStatement deletePs = conn.prepareStatement(deleteSql);
+                    deletePs.setString(1, bookName);
+                    int rowsDeleted = deletePs.executeUpdate();
+                    if (rowsDeleted > 0) {
+                        System.out.println("Book deleted successfully.");
+                    } else {
+                        System.out.println("Deletion failed.");
+                    }
+                    deletePs.close();
+                } else {
+                    System.out.println("Deletion canceled.");
+                }
+
+            } else {
+                System.out.println("The Book NOT found!!!");
+            }
+            rs.close();
+            ps.close();
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void searchBook() {
+        try {
+            Connection conn = DBConnection.getConnection();
+            System.out.println("Enter The Book Name");
+            String name = scanner.nextLine();
+
+            String sql = "SELECT * FROM books WHERE LOWER(name) = LOWER(?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("Name : " + rs.getString("name"));
+                System.out.println("Writer : " + rs.getString("writer"));
+                System.out.println("Prise : " + rs.getInt("price"));
+                System.out.println("Status : " + rs.getString("status"));
+                System.out.println("ID : " + rs.getInt("id"));
+            } else {
+                System.out.println("The Book NOT found!!!");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
 

@@ -3,26 +3,18 @@ public class MemberDTO {
     private String birthday;
     private String number;
     private int id;
-    private static int count;
-
-    MemberDTO() {
-        id = ++count;
-    }
 
     public MemberDTO(String name, String birthday, String number) {
         this.name = name;
         this.birthday = birthday;
         this.number = number;
-        this.id = ++count;
     }
 
     public String getInfo() {
         return "MemberDTO{ " +
                 "name='" + name + '\'' +
                 ", birthday='" + birthday + '\'' +
-                ", number=' " + number + '\'' +
-                ", id=" + id +
-                '}';
+                ", number=' " + number +'}';
     }
 
     public String getName() {
@@ -47,9 +39,5 @@ public class MemberDTO {
 
     public void setNumber(String number) {
         this.number = number;
-    }
-
-    public int getId() {
-        return id;
     }
 }

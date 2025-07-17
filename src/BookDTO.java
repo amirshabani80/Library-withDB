@@ -4,6 +4,7 @@ public class BookDTO {
     private String writer;
     private int price;
     private Status status;
+    private int id;
 
 
     public enum Status {
@@ -56,5 +57,12 @@ public class BookDTO {
     public void setStatus(Status status) {
         this.status = status;
     }
-}
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+}

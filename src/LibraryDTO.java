@@ -1,45 +1,48 @@
 public class LibraryDTO {
-private MemberDTO member;
-private BookDTO book;
-private String borrowDate;
-private String returnDate;
+    private int memberId;
+    private int bookId;
+    private String borrowDate;
+    private String returnDate;
+
+    public int getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(int memberId) {
+        this.memberId = memberId;
+    }
+
+    public int getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
+    }
 
     public String getBorrowDate() {
         return borrowDate;
     }
+
     public void setBorrowDate(String borrowDate) {
         this.borrowDate = borrowDate;
     }
+
     public String getReturnDate() {
         return returnDate;
     }
+
     public void setReturnDate(String returnDate) {
         this.returnDate = returnDate;
-    }
-
-    public MemberDTO getMember() {
-        return member;
-    }
-
-    public void setMember(MemberDTO member) {
-        this.member = member;
-    }
-
-    public BookDTO getBook() {
-        return book;
     }
 
     @Override
     public String toString() {
         return "LibraryDTO{" +
-                "member=" + member +
-                ", book=" + book +
+                "member=" + memberId +
+                ", book=" + bookId +
                 ", borrowDate='" + borrowDate + '\'' +
                 ", returnDate='" + returnDate + '\'' +
                 '}';
-    }
-
-    public void setBook(BookDTO book) {
-        this.book = book;
     }
 }

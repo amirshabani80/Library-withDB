@@ -1,11 +1,10 @@
 import java.util.Scanner;
 
-public class Controller {
+public class UserInterface {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        boolean inMainMenu = true;//baraye paridan biroon az halghe
-        while (inMainMenu) {
+        while (true) {
             System.out.println("------------MAIN MENU-----------" +
                     "\n 1) Members Management \n 2) Books Management \n 3) Library Management \n 4) Exit");
             System.out.println("---------------------------\n<<Enter The Menu Option Number>>");
@@ -102,9 +101,8 @@ public class Controller {
 
     public static void manageLibrary() {
         boolean borrowingMenu = true;
-        Scanner scanner = new Scanner(System.in);
-
         while (borrowingMenu) {
+            Scanner scanner = new Scanner(System.in);
             System.out.println("---------BORROWING---------- " +
                     "\n 1) Borrow a Book \n 2) Show Borrow List \n 3) returned Book \n 4) Back to Main Menu");
             System.out.println("---------------------------\n<<Enter The Menu Option Number>>");
@@ -112,13 +110,13 @@ public class Controller {
             LibraryService libraryService = new LibraryService();
             switch (borrowMenuNumber) {
                 case 1:
-                    LibraryService.borrowBook();
+                    libraryService.borrowBook();
                     break;
                 case 2:
-                    System.out.println(LibraryService.borrowList);
+                    libraryService.showBorrowList();
                     break;
                 case 3:
-                    LibraryService.returnBook();
+                    libraryService.returnBook();
                     break;
                 case 4:
                     borrowingMenu = false;

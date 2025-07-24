@@ -1,11 +1,13 @@
+package Book;
+import DB.DBConnection;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class BookService {
     static Scanner scanner = new Scanner(System.in);
 
     public void addBook() {
+
         try (Connection conn = DBConnection.getConnection()) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Enter Book Name:");

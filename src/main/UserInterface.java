@@ -1,8 +1,15 @@
+package main;
+
+import Borrow.LibraryService;
+import Member.MemberService;
+import Book.BookService;
+
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class UserInterface {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("------------MAIN MENU-----------" +
@@ -29,7 +36,7 @@ public class UserInterface {
         }
     }
 
-    public static void manageMembers() {
+    public static void manageMembers() throws SQLException {
         Scanner scanner = new Scanner(System.in);
 
 

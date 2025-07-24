@@ -1,3 +1,5 @@
+package Book;
+
 public class BookDTO {
 
     private String name;
@@ -14,7 +16,7 @@ public class BookDTO {
     }
 
     public String getInfo() {
-        return "BookDTO{" +
+        return "book.BookDTO{" +
                 "name='" + name + '\'' +
                 ", writer='" + writer + '\'' +
                 ", price=" + price +

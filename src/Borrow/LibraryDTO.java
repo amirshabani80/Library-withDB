@@ -1,3 +1,5 @@
+package Borrow;
+
 public class LibraryDTO {
     private int memberId;
     private int bookId;
@@ -38,7 +40,7 @@ public class LibraryDTO {
 
     @Override
     public String toString() {
-        return "LibraryDTO{" +
+        return "Borrow.LibraryDTO{" +
                 "member=" + memberId +
                 ", book=" + bookId +
                 ", borrowDate='" + borrowDate + '\'' +

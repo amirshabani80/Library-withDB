@@ -1,10 +1,17 @@
-package Borrow;
+package borrow;
 
 public class LibraryDTO {
     private int memberId;
     private int bookId;
     private String borrowDate;
     private String returnDate;
+
+    public LibraryDTO(int bookId,int memberId,  String borrowDate, String returnDate) {
+        this.memberId = memberId;
+        this.bookId = bookId;
+        this.borrowDate = borrowDate;
+        this.returnDate = returnDate;
+    }
 
     public int getMemberId() {
         return memberId;
@@ -40,11 +47,9 @@ public class LibraryDTO {
 
     @Override
     public String toString() {
-        return "Borrow.LibraryDTO{" +
-                "member=" + memberId +
-                ", book=" + bookId +
-                ", borrowDate='" + borrowDate + '\'' +
-                ", returnDate='" + returnDate + '\'' +
-                '}';
+        return "|book=" + bookId +
+                "|member=" + memberId +
+                "|borrowDate='" + borrowDate + '\'' +
+                "|returnDate='" + returnDate + '\'';
     }
 }

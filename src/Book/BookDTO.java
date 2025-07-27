@@ -1,4 +1,5 @@
-package Book;
+package book;
+
 
 public class BookDTO {
 
@@ -8,24 +9,28 @@ public class BookDTO {
     private Status status;
     private int id;
 
+    public BookDTO(String name, String writer, int price, String status) {
+        this.name = name;
+        this.writer = writer;
+        this.price = price;
+        this.status = Status.valueOf(status);
+    }
 
     public enum Status {
         AVAILABLE,
-        NEEDREPARE,
-        BORROW
+        NEEDREPAIRE,
+        BORROWED
     }
 
-    public String getInfo() {
-        return "book.BookDTO{" +
-                "name='" + name + '\'' +
+
+    @Override
+    public String toString() {
+        return "name='" + name + '\'' +
                 ", writer='" + writer + '\'' +
                 ", price=" + price +
                 ", status=" + status +
+                ", id=" + id +
                 '}';
-    }
-
-    public BookDTO(String name) {
-        this.name = name;
     }
 
     public String getName() {
@@ -52,12 +57,15 @@ public class BookDTO {
         this.price = price;
     }
 
-    public Status getStatus() {
+    public Enum<Status> getStatus() {
         return status;
     }
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+    public void setStatus(String status) {
+        this.status = Status.valueOf(status);
     }
 
     public int getId() {

@@ -1,4 +1,4 @@
-package Member;
+package member;
 
 public class MemberDTO {
     private String name;
@@ -15,6 +15,12 @@ public class MemberDTO {
                 ", phoneNumber=" + phoneNumber +
                 ", id=" + id +
                 '}';
+    }
+
+    public MemberDTO(String name, String birthday, String phoneNumber) {
+        this.name = name;
+        this.birthday = birthday;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getName() {

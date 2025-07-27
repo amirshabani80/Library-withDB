@@ -1,8 +1,8 @@
 package main;
 
-import Borrow.LibraryService;
-import Member.MemberService;
-import Book.BookService;
+import borrow.LibraryService;
+import member.MemberService;
+import book.BookService;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -42,8 +42,8 @@ public class UserInterface {
 
         boolean inMembersMenu = true;
         while (inMembersMenu) {
-            System.out.println("------------MEMBERS-----------\n 1) Add member \n 2) Delete member \n " +
-                    "3) Edit member \n 4) Show Members list \n 5) Back to Main Menu");
+            System.out.println("------------MEMBERS-----------\n 1) Add member \n 2) Show Members list \n " +
+                    "3) Edit member \n 4) Delete member \n 5) Search Member \n 6) Back to Main Menu");
             System.out.println("---------------------------\n<<Enter The Menu Option Number>>");
             int menuNumber = scanner.nextInt();
             MemberService memberService = new MemberService();
@@ -52,15 +52,17 @@ public class UserInterface {
                     memberService.addMember();
                     break;
                 case 2:
-                    memberService.deleteMember();
+                    memberService.showMembersList();
                     break;
                 case 3:
                     memberService.editMember();
                     break;
                 case 4:
-                    memberService.showMembers();
+                    memberService.deleteMember();
                     break;
                 case 5:
+                    memberService.searchMember();
+                case 6:
                     inMembersMenu = false;
                     break;
                 default:
@@ -71,22 +73,23 @@ public class UserInterface {
     }
 
 
-    public static void manageBooks() {
+    public static void manageBooks() throws SQLException {
         boolean inBooksMenu = true;
         while (inBooksMenu) {
             Scanner scanner = new Scanner(System.in);
-            System.out.println("------------BOOKS-----------\n 1) Search Book \n 2) Add Book \n 3) Edit Book" +
-                    " \n 4) Delete Book \n 5) Show Books list \n 6) Back to Main Menu");
+            System.out.println("------------BOOKS-----------\n 1) Add Book \n 2) Show Books list  \n 3) Edit Book" +
+                    " \n 4) Delete Book \n 5) Search Book \n 6) Back to Main Menu");
             System.out.println("---------------------------\n<<Enter The Menu Option Number>>");
 
             int bookMenuNumber = scanner.nextInt();
             BookService bookService = new BookService();
             switch (bookMenuNumber) {
+
                 case 1:
-                    bookService.searchBook();
+                    bookService.addBook();
                     break;
                 case 2:
-                    bookService.addBook();
+                    bookService.showBooksList();
                     break;
                 case 3:
                     bookService.editBook();
@@ -95,7 +98,7 @@ public class UserInterface {
                     bookService.deleteBook();
                     break;
                 case 5:
-                    bookService.showBooksList();
+                    bookService.searchBook();
                     break;
                 case 6:
                     inBooksMenu = false;
@@ -106,7 +109,7 @@ public class UserInterface {
         }
     }
 
-    public static void manageLibrary() {
+    public static void manageLibrary() throws SQLException {
         boolean borrowingMenu = true;
         while (borrowingMenu) {
             Scanner scanner = new Scanner(System.in);

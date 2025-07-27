@@ -1,6 +1,6 @@
-package Member;
+package member;
 
-import DB.DBConnection;
+import databaseConnection.DBConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MemberDAO {
 
-    public static int addMember(MemberDTO memberDTO) throws SQLException {
+    public int addMember(MemberDTO memberDTO) throws SQLException {
         int generatedId = -1;
         Connection conn = null;
         PreparedStatement ps = null;
@@ -36,7 +36,7 @@ public class MemberDAO {
     }
 
 
-    public static List<MemberDTO> showMembers() throws SQLException {
+    public List<MemberDTO> showMembersList() throws SQLException {
         List<MemberDTO> members = new ArrayList<>();
         ResultSet rs = null;
         PreparedStatement ps = null;
@@ -47,16 +47,10 @@ public class MemberDAO {
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
-                MemberDTO member = new MemberDTO();
-                {
+                MemberDTO member = new MemberDTO(rs.getString(2),rs.getString(3),rs.getString(4));
                     member.setId(rs.getInt(1));
-                    member.setName(rs.getString(2));
-                    member.setBirthday(rs.getString(3));
-                    member.setPhoneNumber(rs.getString(4));
                     members.add(member);
-                }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -67,7 +61,7 @@ public class MemberDAO {
         return members;
     }
 
-    public static int editMember(MemberDTO newMember, int id) throws SQLException {
+    public int editMember(MemberDTO newMember, int id) throws SQLException {
         PreparedStatement ps = null;
         Connection conn = null;
         try {
@@ -91,7 +85,7 @@ public class MemberDAO {
         return 1;
     }
 
-    public static int deleteMember(int id) throws SQLException {
+    public int deleteMember(int id) throws SQLException {
         ResultSet rs = null;
         PreparedStatement ps = null;
         Connection conn = null;
@@ -126,11 +120,8 @@ public class MemberDAO {
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if (rs.next()) {
-                member = new MemberDTO();
+                member = new MemberDTO(rs.getString(2),rs.getString(3),rs.getString(4));
                 member.setId(rs.getInt(1));
-                member.setName(rs.getString(2));
-                member.setBirthday(rs.getString(3));
-                member.setPhoneNumber(rs.getString(4));
             }
 
         } catch (Exception e) {

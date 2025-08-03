@@ -1,5 +1,6 @@
 package book;
 
+
 import databaseConnection.DBConnection;
 
 import java.sql.*;
@@ -47,7 +48,7 @@ public class BookDAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 BookDTO bookDTO = new BookDTO(rs.getString(2), rs.getString(3),
-                        rs.getInt(4), rs.getString(5));
+                        rs.getString(4), rs.getString(5));
                 bookDTO.setId(rs.getInt(1));
                 bookDTOList.add(bookDTO);
             }
@@ -120,10 +121,36 @@ public class BookDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 book = new BookDTO(rs.getString(2), rs.getString(3),
-                        rs.getInt(4), rs.getString(5));
+                        rs.getString(4), rs.getString(5));
                 book.setId(rs.getInt(1));
             }
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (conn != null) conn.close();
+        }
+        return book;
+    }
+
+    public static BookDTO findByName(String name) throws SQLException {
+        BookDTO book = null;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = DBConnection.getConnection();
+            String sql = "SELECT * FROM books WHERE name =?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, name);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                book = new BookDTO(rs.getString(2), rs.getString(3),
+                        rs.getString(4), rs.getString(5));
+                book.setId(rs.getInt(1));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

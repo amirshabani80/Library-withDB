@@ -9,7 +9,7 @@ public class BookDTO {
     private Status status;
     private int id;
 
-    public BookDTO(String name, String writer, int price, String status) {
+    public BookDTO(String name, String writer, String price, String status) {
         this.name = name;
         this.writer = writer;
         this.price = price;

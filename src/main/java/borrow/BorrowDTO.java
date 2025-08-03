@@ -1,12 +1,12 @@
 package borrow;
 
-public class LibraryDTO {
+public class BorrowDTO {
     private int memberId;
     private int bookId;
     private String borrowDate;
     private String returnDate;
 
-    public LibraryDTO(int bookId,int memberId,  String borrowDate, String returnDate) {
+    public BorrowDTO(String bookId, String memberId, String borrowDate, String returnDate) {
         this.memberId = memberId;
         this.bookId = bookId;
         this.borrowDate = borrowDate;

@@ -1,19 +1,30 @@
-package main;
+package UI;
 
-import borrow.LibraryService;
-import member.MemberService;
 import book.BookService;
+import borrow.BorrowService;
+import member.MemberService;
 
 import java.sql.SQLException;
 import java.util.Scanner;
 
 public class UserInterface {
+    static Scanner scanner = new Scanner(System.in);
+    static int password = 123456;
 
     public static void main(String[] args) throws SQLException {
-        Scanner scanner = new Scanner(System.in);
+        int input;
+        do {
+            System.out.println("🔐 Please Enter the password 🔐");
+            input = scanner.nextInt();
+            scanner.nextLine();
+            if (input != password)
+                System.out.println("❌❌The entry password is incorrect❌❌");
+        } while (input != password);
+
+        System.out.println("Welcome Boss");
         while (true) {
             System.out.println("------------MAIN MENU-----------" +
-                    "\n 1) Members Management \n 2) Books Management \n 3) Library Management \n 4) Exit");
+                    "\n 1) Members Management \n 2) Books Management \n 3) Borrow Management \n 4) Exit");
             System.out.println("---------------------------\n<<Enter The Menu Option Number>>");
             int menuNumber = scanner.nextInt();
             switch (menuNumber) {
@@ -24,7 +35,7 @@ public class UserInterface {
                     manageBooks();
                     break;
                 case 3:
-                    manageLibrary();
+                    manageBorrows();
                     break;
                 case 4:
                     System.out.println("GOODBYE!!");
@@ -37,13 +48,10 @@ public class UserInterface {
     }
 
     public static void manageMembers() throws SQLException {
-        Scanner scanner = new Scanner(System.in);
-
-
         boolean inMembersMenu = true;
         while (inMembersMenu) {
-            System.out.println("------------MEMBERS-----------\n 1) Add member \n 2) Show Members list \n " +
-                    "3) Edit member \n 4) Delete member \n 5) Search Member \n 6) Back to Main Menu");
+            System.out.println("------------MEMBERS-----------\n 1) Add  \n 2) Show Members list \n " +
+                    "3) Edit  \n 4) Delete  \n 5) Search Member \n 6) Back to Main Menu");
             System.out.println("---------------------------\n<<Enter The Menu Option Number>>");
             int menuNumber = scanner.nextInt();
             MemberService memberService = new MemberService();
@@ -62,6 +70,7 @@ public class UserInterface {
                     break;
                 case 5:
                     memberService.searchMember();
+                    break;
                 case 6:
                     inMembersMenu = false;
                     break;
@@ -76,9 +85,8 @@ public class UserInterface {
     public static void manageBooks() throws SQLException {
         boolean inBooksMenu = true;
         while (inBooksMenu) {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("------------BOOKS-----------\n 1) Add Book \n 2) Show Books list  \n 3) Edit Book" +
-                    " \n 4) Delete Book \n 5) Search Book \n 6) Back to Main Menu");
+            System.out.println("------------BOOKS-----------\n 1) Add  \n 2) Show Books list  \n 3) Edit " +
+                    " \n 4) Delete  \n 5) Search Book \n 6) Back to Main Menu");
             System.out.println("---------------------------\n<<Enter The Menu Option Number>>");
 
             int bookMenuNumber = scanner.nextInt();
@@ -106,34 +114,38 @@ public class UserInterface {
                 default:
                     System.out.println("The entered option is incorrect.");
             }
+
         }
     }
 
-    public static void manageLibrary() throws SQLException {
+    public static void manageBorrows() throws SQLException {
         boolean borrowingMenu = true;
         while (borrowingMenu) {
-            Scanner scanner = new Scanner(System.in);
             System.out.println("---------BORROWING---------- " +
-                    "\n 1) Borrow a Book \n 2) Show Borrow List \n 3) returned Book \n 4) Back to Main Menu");
+                    "\n 1) Borrow a Book \n 2) Show Borrow List \n 3) returned Book \n 4) Show delayed books \n 5) Back to Main Menu");
             System.out.println("---------------------------\n<<Enter The Menu Option Number>>");
             int borrowMenuNumber = scanner.nextInt();
-            LibraryService libraryService = new LibraryService();
+
+            BorrowService borrowService = new BorrowService();
             switch (borrowMenuNumber) {
                 case 1:
-                    libraryService.borrowBook();
+                    borrowService.borrowBook();
                     break;
                 case 2:
-                    libraryService.showBorrowList();
+                    borrowService.showBorrowList();
                     break;
                 case 3:
-                    libraryService.returnBook();
+                    borrowService.returnBook();
                     break;
                 case 4:
+                    borrowService.showDelayedBooks();
+                case 5:
                     borrowingMenu = false;
                     break;
                 default:
                     System.out.println("The entered option is incorrect.");
             }
+
         }
     }
 }

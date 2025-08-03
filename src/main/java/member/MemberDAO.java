@@ -47,9 +47,9 @@ public class MemberDAO {
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
-                MemberDTO member = new MemberDTO(rs.getString(2),rs.getString(3),rs.getString(4));
-                    member.setId(rs.getInt(1));
-                    members.add(member);
+                MemberDTO member = new MemberDTO(rs.getString(2), rs.getString(3), rs.getString(4));
+                member.setId(rs.getInt(1));
+                members.add(member);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -120,7 +120,34 @@ public class MemberDAO {
             ps.setInt(1, id);
             rs = ps.executeQuery();
             if (rs.next()) {
-                member = new MemberDTO(rs.getString(2),rs.getString(3),rs.getString(4));
+                member = new MemberDTO(rs.getString(2), rs.getString(3), rs.getString(4));
+                member.setId(rs.getInt(1));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (conn != null) conn.close();
+        }
+
+        return member;
+    }
+
+    public static MemberDTO findByName(String name) throws SQLException {
+        MemberDTO member = null;
+        ResultSet rs = null;
+        PreparedStatement ps = null;
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            String sql = "SELECT * FROM members WHERE name=?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, name);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                member = new MemberDTO(rs.getString(2), rs.getString(3), rs.getString(4));
                 member.setId(rs.getInt(1));
             }
 
@@ -135,5 +162,6 @@ public class MemberDAO {
         return member;
     }
 }
+
 
 

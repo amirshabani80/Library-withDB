@@ -12,7 +12,7 @@ import java.util.List;
 
 public class BorrowDAO {
 
-    public int borrowBook(BorrowDTO borrowDTO) throws SQLException {
+    public Integer borrowBook(BorrowDTO borrowDTO) throws SQLException {
         Connection conn = null;
         PreparedStatement ps = null;
         PreparedStatement updatePs = null;
@@ -40,7 +40,7 @@ public class BorrowDAO {
         return 0;
     }
 
-    public int returnBook(int bookId) throws SQLException {
+    public Integer returnBook(Integer bookId) throws SQLException {
         Connection conn = null;
         PreparedStatement ps = null;
         PreparedStatement statusPs = null;
@@ -76,7 +76,7 @@ public class BorrowDAO {
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
-                BorrowDTO borrowDTO = new BorrowDTO(rs.getInt(1), rs.getInt(2)
+                BorrowDTO borrowDTO = new BorrowDTO(rs.getString(1), rs.getString(2)
                         , rs.getString(3), rs.getString(4));
                 borrowDTOS.add(borrowDTO);
             }

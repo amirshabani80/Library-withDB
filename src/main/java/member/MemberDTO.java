@@ -1,13 +1,18 @@
 package member;
-
+import lombok.Data;
+@Data
 public class MemberDTO {
     private String name;
     private String birthday;
     private String phoneNumber;
-    private int id;
+    private Integer id;
 
 
-
+    public MemberDTO(String name, String birthday, String phoneNumber) {
+        this.name = name;
+        this.birthday = birthday;
+        this.phoneNumber = phoneNumber;
+    }
     @Override
     public String toString() {
         return "name=" + name +
@@ -17,41 +22,5 @@ public class MemberDTO {
                 '}';
     }
 
-    public MemberDTO(String name, String birthday, String phoneNumber) {
-        this.name = name;
-        this.birthday = birthday;
-        this.phoneNumber = phoneNumber;
-    }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 }

@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookDAO {
-    public int addBook(BookDTO bookDTO) throws SQLException {
-        int generatedId = -1;
+    public Integer addBook(BookDTO bookDTO) throws SQLException {
+        Integer generatedId = -1;
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -62,7 +62,7 @@ public class BookDAO {
         return bookDTOList;
     }
 
-    public int editBook(BookDTO newBookDTO, int id) throws SQLException {
+    public Integer editBook(BookDTO newBookDTO, int id) throws SQLException {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
@@ -87,7 +87,7 @@ public class BookDAO {
         return 1;
     }
 
-    public int deleteBook(int id) throws SQLException {
+    public Integer deleteBook(int id) throws SQLException {
         Connection conn = null;
         PreparedStatement ps = null;
         try {

@@ -5,6 +5,7 @@ import book.BookDTO;
 import book.BookService;
 import member.MemberDTO;
 import member.MemberService;
+import staticStrings.*;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -17,104 +18,59 @@ public class BorrowService {
     static Scanner scanner = new Scanner(System.in);
 
     public void borrowBook() throws SQLException {
-        String bookId;
-        do {
-            System.out.println("Enter the Book ID Please");
-            bookId = scanner.nextLine();
-            if (!BorrowValidation.isValidNumber(bookId)) {
-                System.out.println("Invalid ID!!");
-            }
-        } while (!BorrowValidation.isValidNumber(bookId));
+        String bookId = BookService.takeBookId();
         BookDTO bookFind = BookService.findBook(Integer.parseInt(bookId));
-        String memberId;
-        do {
-            System.out.println("Enter the Book ID Please");
-            memberId = scanner.nextLine();
-            if (!BorrowValidation.isValidNumber(memberId)) {
-                System.out.println("Invalid ID!!");
-            }
-        } while (!BorrowValidation.isValidNumber(memberId));
+        String memberId = MemberService.takeMemberId();
         MemberDTO memberFind = MemberService.findMember(Integer.parseInt(memberId));
         if (memberFind == null) {
-            System.out.println("Member Not Found!!");
+            Strings.memberNotFound();
             return;
         } else if (bookFind == null) {
-            System.out.println("Book Not Found!!");
+            Strings.bookNotFound();
             return;
         } else if (bookFind.getStatus() != BookDTO.Status.AVAILABLE) {
-            System.out.println("The Book is Not Available!!");
+            Strings.notAvailable();
             return;
         } else {
-            String borrowDate;
-            String returnDate;
-            do {
-                System.out.println("Enter Borrow Date (like 2022-1-24):");
-                borrowDate = scanner.nextLine();
-                if (!BorrowValidation.isValidDate(borrowDate)) {
-                    System.out.println("Invalid date!!");
-                }
-            } while (!BorrowValidation.isValidDate(borrowDate));
-            do {
-                System.out.println("Enter Return Date (like 2022-1-24):");
-                returnDate = scanner.nextLine();
-                if (!BorrowValidation.isValidDate(returnDate)) {
-                    System.out.println("Invalid date!!");
-                }
-            } while (!BorrowValidation.isValidDate(returnDate));
+            String borrowDate = takeBorrowDate();
+            String returnDate = takeReturnDate();
             BorrowDTO borrowDTO = new BorrowDTO(bookId, memberId,
                     borrowDate, returnDate);
             BorrowDAO borrowDAO = new BorrowDAO();
             int borrow = borrowDAO.borrowBook(borrowDTO);
             if (borrow == 1) {
-                System.out.println("The book has been successfully borrowed✔");
-            } else System.out.println("Borrowing operation failed!!!");
+                Strings.successBorrow();
+            } else Strings.failBorrow();
         }
     }
 
 
     public void returnBook() throws SQLException {
-        String bookId;
-        do {
-            System.out.println("Enter the Book ID Please");
-            bookId = scanner.nextLine();
-            if (!BorrowValidation.isValidNumber(bookId)) {
-                System.out.println("Invalid ID!!");
-            }
-        } while (!BorrowValidation.isValidNumber(bookId));
-        BookDTO bookFind = BookService.findBook(Integer.parseInt(bookId));
+        String bookId = BookService.takeBookId();
         BorrowDAO borrowDAO = new BorrowDAO();
         int returnBook = borrowDAO.returnBook(Integer.parseInt(bookId));
         if (returnBook == 1) {
-            System.out.println("Now,The book is AVAILABLE!");
+            Strings.isAvailable();
         }
     }
 
 
-    public void showDelayedBooks() throws SQLException {
-        BorrowDAO borrowDAO = new BorrowDAO();
-        List<BorrowDTO> borrowedBooks = borrowDAO.showBorrowList();
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate today = LocalDate.now();
-
-        boolean anyDelayed = false;
-
-        for (BorrowDTO book : borrowedBooks) {
-            LocalDate returnDate = LocalDate.parse(book.getReturnDate(), formatter);
-            if (today.isAfter(returnDate)) {
-                anyDelayed = true;
-                long daysLate = ChronoUnit.DAYS.between(returnDate, today);
-                System.out.println("Book ID: " + book.getBookId() + " is delayed by " + daysLate + " days.");
-                System.out.println("Member ID: " + book.getMemberId());
-                System.out.println("Return Date: " + book.getReturnDate());
-                System.out.println("------------------------------");
+        public void showDelayedBooks() throws SQLException {
+            BorrowDAO borrowDAO = new BorrowDAO();
+            List<BorrowDTO> borrowedBooks = borrowDAO.showBorrowList();
+            boolean anyDelayed = false;
+            for (BorrowDTO book : borrowedBooks) {
+                long daysLate = calculateDelayDays(book.getReturnDate());
+                if (daysLate > 0) {
+                    anyDelayed = true;
+                    Strings.late(book.getBookId(), daysLate, book.getMemberId(), book.getReturnDate());
+                }
+            }
+            if (!anyDelayed) {
+                Strings.notDelayBook();
             }
         }
 
-        if (!anyDelayed) {
-            System.out.println("No delayed books found.");
-        }
-    }
 
 
     public void showBorrowList() throws SQLException {
@@ -126,6 +82,37 @@ public class BorrowService {
             System.out.println("book: " + BookService.findBook(borrowDTO.getBookId()).getName() +
                     " |member: " + MemberService.findMember(borrowDTO.getMemberId()).getName());
         }
+    }
+
+    public String takeBorrowDate() {
+        String borrowDate;
+        do {
+            Strings.borrowDate();
+            borrowDate = scanner.nextLine();
+            if (!BorrowValidation.isValidDate(borrowDate)) {
+                Strings.invalidDate();
+            }
+        } while (!BorrowValidation.isValidDate(borrowDate));
+        return borrowDate;
+    }
+
+    public String takeReturnDate() {
+        String returnDate;
+
+        do {
+            Strings.returnDate();
+            returnDate = scanner.nextLine();
+            if (!BorrowValidation.isValidDate(returnDate)) {
+                Strings.invalidDate();
+            }
+        } while (!BorrowValidation.isValidDate(returnDate));
+        return returnDate;
+    }
+    private long calculateDelayDays(String returnDateStr) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate today = LocalDate.now();
+        LocalDate returnDate = LocalDate.parse(returnDateStr, formatter);
+        return ChronoUnit.DAYS.between(returnDate, today);
     }
 
 }

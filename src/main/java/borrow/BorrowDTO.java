@@ -1,49 +1,19 @@
 package borrow;
-
+import lombok.Data;
+@Data
 public class BorrowDTO {
-    private int memberId;
-    private int bookId;
+    private Integer memberId;
+    private Integer bookId;
     private String borrowDate;
     private String returnDate;
 
     public BorrowDTO(String bookId, String memberId, String borrowDate, String returnDate) {
-        this.memberId = memberId;
-        this.bookId = bookId;
+        this.memberId = Integer.valueOf(memberId);
+        this.bookId = Integer.valueOf(bookId);
         this.borrowDate = borrowDate;
         this.returnDate = returnDate;
     }
 
-    public int getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(int memberId) {
-        this.memberId = memberId;
-    }
-
-    public int getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
-    }
-
-    public String getBorrowDate() {
-        return borrowDate;
-    }
-
-    public void setBorrowDate(String borrowDate) {
-        this.borrowDate = borrowDate;
-    }
-
-    public String getReturnDate() {
-        return returnDate;
-    }
-
-    public void setReturnDate(String returnDate) {
-        this.returnDate = returnDate;
-    }
 
     @Override
     public String toString() {

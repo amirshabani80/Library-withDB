@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MemberDAO {
 
-    public int addMember(MemberDTO memberDTO) throws SQLException {
+    public Integer addMember(MemberDTO memberDTO) throws SQLException {
         int generatedId = -1;
         Connection conn = null;
         PreparedStatement ps = null;
@@ -61,7 +61,7 @@ public class MemberDAO {
         return members;
     }
 
-    public int editMember(MemberDTO newMember, int id) throws SQLException {
+    public Integer editMember(MemberDTO newMember, Integer id) throws SQLException {
         PreparedStatement ps = null;
         Connection conn = null;
         try {
@@ -85,7 +85,7 @@ public class MemberDAO {
         return 1;
     }
 
-    public int deleteMember(int id) throws SQLException {
+    public Integer deleteMember(Integer id) throws SQLException {
         ResultSet rs = null;
         PreparedStatement ps = null;
         Connection conn = null;
@@ -108,7 +108,7 @@ public class MemberDAO {
     }
 
 
-    public static MemberDTO findById(int id) throws SQLException {
+    public static MemberDTO findById(Integer id) throws SQLException {
         MemberDTO member = null;
         ResultSet rs = null;
         PreparedStatement ps = null;

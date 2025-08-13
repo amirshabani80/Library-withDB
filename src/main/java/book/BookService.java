@@ -1,6 +1,9 @@
 package book;
 
 
+import borrow.*;
+import staticStrings.*;
+
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
@@ -9,36 +12,14 @@ public class BookService {
     static Scanner scanner = new Scanner(System.in);
 
     public void addBook() throws SQLException {
-        String name;
-        String writer;
-        String price;
-        do {
-            System.out.println("Enter Book Name:");
-            name = scanner.nextLine();
-            if (!BookVaidation.isValidName(name)) {
-                System.out.println("Invalid name!!");
-            }
-        } while (!BookVaidation.isValidName(name));
-        do {
-            System.out.println("Enter Writer Name:");
-            writer = scanner.nextLine();
-            if (!BookVaidation.isValidName(writer)) {
-                System.out.println("Invalid name!!");
-            }
-        } while (!BookVaidation.isValidName(writer));
-        do {
-            System.out.println("Enter Price:");
-            price = scanner.nextLine();
-            if (!BookVaidation.isValidNumber(price)) {
-                System.out.println("Invalid price!!");
-            }
-        } while (!BookVaidation.isValidNumber(price));
+        String name = takeName();
+        String writer = takeWriterName();
+        String price = String.valueOf(takePrice());
         String status = "AVAILABLE";
         BookDTO bookDTO = new BookDTO(name, writer, price, status);
         BookDAO bookId = new BookDAO();
-        System.out.println("Book added successfully.");
-        System.out.println("The Book ID: " + bookId.addBook(bookDTO) + "\n--------------------------------------------- "
-                + "\n Book name: " + bookDTO.getName() + "|Writer : " + bookDTO.getWriter() + "|prise: " + bookDTO.getPrice() + "|Status: " + bookDTO.getStatus());
+        Strings.bookAdded(bookId.addBook(bookDTO), bookDTO.getName(), bookDTO.getWriter(), bookDTO.getPrice(), bookDTO.getStatus());
+
     }
 
 
@@ -51,50 +32,23 @@ public class BookService {
     }
 
     public void editBook() throws SQLException {
-        String id;
-        do {
-            System.out.println("Enter the Book ID Please");
-            id = scanner.nextLine();
-            if (!BookVaidation.isValidNumber(id)) {
-                System.out.println("Invalid ID!!");
-            }
-        } while (!BookVaidation.isValidNumber(id));
+        String id = takeBookId();
         BookDTO bookDTO = BookDAO.findById(Integer.parseInt(id));
         if (bookDTO != null) {
-            System.out.println("Current Book Info:" + bookDTO + "\n-----------------------------------------------------------\n" +
-                    "Enter New information\n      ||      \nEnter The Name:");
-            String newWriter;
-            String newName;
-            String newPrice;
-            do {
-                newName = scanner.nextLine();
-                if (!BookVaidation.isValidName(newName)) {
-                    System.out.println("InvalidName!!");
-                }
-            } while (!BookVaidation.isValidName(newName));
-            do {
-                System.out.println("Enter Writer Name:");
-                newWriter = scanner.nextLine();
-                if (!BookVaidation.isValidName(newName)) {
-                    System.out.println("InvalidName!!");
-                }
-            } while (!BookVaidation.isValidName(newName));
-            do {
-                System.out.println("Enter Price:");
-                newPrice = scanner.nextLine();
-                if (!BookVaidation.isValidNumber(newPrice)) {
-                    System.out.println("Invalid Price!!");
-                }
-            } while (!BookVaidation.isValidNumber(newPrice));
-            System.out.println("Enter new status (AVAILABLE / NEEDREPARE / BORROW):");
+            Strings.currentBook(bookDTO);
+            Strings.newBookInf();
+            String newWriter = takeNewWriterName();
+            String newName = takeNewName();
+            String newPrice=takeNewPrice();
+            Strings.enterStat();
             String newStatus = scanner.nextLine().toUpperCase();
             BookDTO newBookDTO = new BookDTO(newName, newWriter, newPrice, newStatus);
             BookDAO bookDAO = new BookDAO();
             int getToDao = bookDAO.editBook(newBookDTO, Integer.parseInt(id));
             if (getToDao == 0) {
-                System.out.println("Failed to update the Book!!");
+                Strings.failedBookUpdate();
             } else {
-                System.out.println("Book updated successfully\n---------------------------------------------------------------");
+                Strings.successBookUpdate();
                 System.out.println(BookDAO.findById(Integer.parseInt(id)).toString());
             }
         }
@@ -102,50 +56,126 @@ public class BookService {
 
 
     public void deleteBook() throws SQLException {
-        String id;
-        do {
-            System.out.println("Enter the Book ID Please");
-            id = scanner.nextLine();
-            if (!BookVaidation.isValidNumber(id)) {
-                System.out.println("Invalid ID!!");
-            }
-        } while (!BookVaidation.isValidNumber(id));
+        String id=takeBookId();
         BookDTO bookDTO = BookDAO.findById(Integer.parseInt(id));
         if (bookDTO != null) {
             System.out.println(bookDTO);
-            System.out.println("If you are sure enter <<Y>>");
+            Strings.sure();
             String sure = scanner.nextLine().toUpperCase();
             if (sure.equals("Y")) {
                 BookDAO bookDAO = new BookDAO();
                 int delete = bookDAO.deleteBook(Integer.parseInt(id));
                 if (delete == 1)
-                    System.out.println("Book deleted successfully");
+                    Strings.delBookSuccess();
             } else {
-                System.out.println("Deletion canceled");
+                Strings.cancelDel();
             }
         } else {
-            System.out.println("Deletion failed!!");
+            Strings.failDel();
         }
     }
 
     public void searchBook() throws SQLException {
-        System.out.println("Enter The Book name or ID");
+        Strings.enterBookNorId();
         String input = scanner.next();
         if (input.matches("\\d+")) {
             BookDTO bookDTO = BookDAO.findById(Integer.parseInt(input));
             if (bookDTO == null) {
-                System.out.println("Book not found!!");
+                Strings.bookNotFound();
             } else {
                 System.out.println(bookDTO);
             }
         } else {
             BookDTO bookDTO = BookDAO.findByName(input);
             if (bookDTO == null) {
-                System.out.println("Book not found!!");
+                Strings.bookNotFound();
             } else {
                 System.out.println(bookDTO);
             }
         }
+    }
+
+    public static String takeBookId() {
+        String bookId;
+        do {
+            Strings.enterBookId();
+            bookId = scanner.nextLine();
+            if (!BorrowValidation.isValidNumber(bookId)) {
+                Strings.invalidId();
+            }
+        } while (!BorrowValidation.isValidNumber(bookId));
+        return bookId;
+    }
+
+    public String takeName() {
+        String name;
+        do {
+            Strings.enterBookName();
+            name = scanner.nextLine();
+            if (!BookVaidation.isValidName(name)) {
+                Strings.invalidName();
+            }
+        } while (!BookVaidation.isValidName(name));
+        return name;
+    }
+
+    public String takeWriterName() {
+        String writer;
+        do {
+            Strings.writerName();
+            writer = scanner.nextLine();
+            if (!BookVaidation.isValidName(writer)) {
+                Strings.invalidName();
+            }
+        } while (!BookVaidation.isValidName(writer));
+        return writer;
+    }
+
+    public Integer takePrice() {
+        String price;
+        do {
+            Strings.price();
+            price = scanner.nextLine();
+            if (!BookVaidation.isValidNumber(price)) {
+                Strings.invalidPrice();
+            }
+        } while (!BookVaidation.isValidNumber(price));
+        return null;
+    }
+
+    public String takeNewName() {
+        String newName;
+        do {
+            newName = scanner.nextLine();
+            if (!BookVaidation.isValidName(newName)) {
+                Strings.invalidName();
+            }
+        } while (!BookVaidation.isValidName(newName));
+        return newName;
+    }
+
+    public String takeNewWriterName() {
+        String newWriter;
+        do {
+            Strings.writerName();
+            newWriter = scanner.nextLine();
+            if (!BookVaidation.isValidName(newWriter)) {
+                Strings.invalidName();
+            }
+        } while (!BookVaidation.isValidName(newWriter));
+        return newWriter;
+    }
+
+    public String takeNewPrice() {
+        String newPrice;
+        do {
+            Strings.price();
+            newPrice = scanner.nextLine();
+            if (!BookVaidation.isValidNumber(newPrice)) {
+                Strings.invalidPrice();
+            }
+        } while (!BookVaidation.isValidNumber(newPrice));
+        return newPrice;
     }
 
     public static BookDTO findBook(int id) throws SQLException {

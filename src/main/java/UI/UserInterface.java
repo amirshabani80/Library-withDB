@@ -12,7 +12,7 @@ public class UserInterface {
     static int password = 123456;
 
     public static void main(String[] args) throws SQLException {
-        int input;
+        Integer input;
         do {
             System.out.println("🔐 Please Enter the password 🔐");
             input = scanner.nextInt();
@@ -26,7 +26,7 @@ public class UserInterface {
             System.out.println("------------MAIN MENU-----------" +
                     "\n 1) Members Management \n 2) Books Management \n 3) Borrow Management \n 4) Exit");
             System.out.println("---------------------------\n<<Enter The Menu Option Number>>");
-            int menuNumber = scanner.nextInt();
+            Integer menuNumber = scanner.nextInt();
             switch (menuNumber) {
                 case 1:
                     manageMembers();
@@ -53,7 +53,7 @@ public class UserInterface {
             System.out.println("------------MEMBERS-----------\n 1) Add  \n 2) Show Members list \n " +
                     "3) Edit  \n 4) Delete  \n 5) Search Member \n 6) Back to Main Menu");
             System.out.println("---------------------------\n<<Enter The Menu Option Number>>");
-            int menuNumber = scanner.nextInt();
+            Integer menuNumber = scanner.nextInt();
             MemberService memberService = new MemberService();
             switch (menuNumber) {
                 case 1:
@@ -89,7 +89,7 @@ public class UserInterface {
                     " \n 4) Delete  \n 5) Search Book \n 6) Back to Main Menu");
             System.out.println("---------------------------\n<<Enter The Menu Option Number>>");
 
-            int bookMenuNumber = scanner.nextInt();
+            Integer bookMenuNumber = scanner.nextInt();
             BookService bookService = new BookService();
             switch (bookMenuNumber) {
 
@@ -124,7 +124,7 @@ public class UserInterface {
             System.out.println("---------BORROWING---------- " +
                     "\n 1) Borrow a Book \n 2) Show Borrow List \n 3) returned Book \n 4) Show delayed books \n 5) Back to Main Menu");
             System.out.println("---------------------------\n<<Enter The Menu Option Number>>");
-            int borrowMenuNumber = scanner.nextInt();
+            Integer borrowMenuNumber = scanner.nextInt();
 
             BorrowService borrowService = new BorrowService();
             switch (borrowMenuNumber) {

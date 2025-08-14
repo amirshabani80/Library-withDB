@@ -3,6 +3,7 @@ package UI;
 import book.BookService;
 import borrow.BorrowService;
 import member.MemberService;
+import staticStrings.*;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -14,18 +15,16 @@ public class UserInterface {
     public static void main(String[] args) throws SQLException {
         Integer input;
         do {
-            System.out.println("🔐 Please Enter the password 🔐");
+            Strings.enterPass();
             input = scanner.nextInt();
             scanner.nextLine();
             if (input != password)
-                System.out.println("❌❌The entry password is incorrect❌❌");
+                Strings.passincorect();
         } while (input != password);
 
-        System.out.println("Welcome Boss");
+        Strings.welcome();
         while (true) {
-            System.out.println("------------MAIN MENU-----------" +
-                    "\n 1) Members Management \n 2) Books Management \n 3) Borrow Management \n 4) Exit");
-            System.out.println("---------------------------\n<<Enter The Menu Option Number>>");
+            Strings.mainMenu();
             Integer menuNumber = scanner.nextInt();
             switch (menuNumber) {
                 case 1:
@@ -38,11 +37,11 @@ public class UserInterface {
                     manageBorrows();
                     break;
                 case 4:
-                    System.out.println("GOODBYE!!");
+                    Strings.goodby();
                     System.exit(0);
                     break;
                 default:
-                    System.out.println("The entered option is incorrect.");
+                    Strings.enterOptionIncorrect();
             }
         }
     }
@@ -50,9 +49,7 @@ public class UserInterface {
     public static void manageMembers() throws SQLException {
         boolean inMembersMenu = true;
         while (inMembersMenu) {
-            System.out.println("------------MEMBERS-----------\n 1) Add  \n 2) Show Members list \n " +
-                    "3) Edit  \n 4) Delete  \n 5) Search Member \n 6) Back to Main Menu");
-            System.out.println("---------------------------\n<<Enter The Menu Option Number>>");
+            Strings.memberMenu();
             Integer menuNumber = scanner.nextInt();
             MemberService memberService = new MemberService();
             switch (menuNumber) {
@@ -75,7 +72,7 @@ public class UserInterface {
                     inMembersMenu = false;
                     break;
                 default:
-                    System.out.println("The entered option is incorrect.");
+                    Strings.enterOptionIncorrect();
                     break;
             }
         }
@@ -85,10 +82,7 @@ public class UserInterface {
     public static void manageBooks() throws SQLException {
         boolean inBooksMenu = true;
         while (inBooksMenu) {
-            System.out.println("------------BOOKS-----------\n 1) Add  \n 2) Show Books list  \n 3) Edit " +
-                    " \n 4) Delete  \n 5) Search Book \n 6) Back to Main Menu");
-            System.out.println("---------------------------\n<<Enter The Menu Option Number>>");
-
+            Strings.booksMenu();
             Integer bookMenuNumber = scanner.nextInt();
             BookService bookService = new BookService();
             switch (bookMenuNumber) {
@@ -112,7 +106,7 @@ public class UserInterface {
                     inBooksMenu = false;
                     break;
                 default:
-                    System.out.println("The entered option is incorrect.");
+                    Strings.enterOptionIncorrect();
             }
 
         }
@@ -121,9 +115,7 @@ public class UserInterface {
     public static void manageBorrows() throws SQLException {
         boolean borrowingMenu = true;
         while (borrowingMenu) {
-            System.out.println("---------BORROWING---------- " +
-                    "\n 1) Borrow a Book \n 2) Show Borrow List \n 3) returned Book \n 4) Show delayed books \n 5) Back to Main Menu");
-            System.out.println("---------------------------\n<<Enter The Menu Option Number>>");
+            Strings.borrowMenu();
             Integer borrowMenuNumber = scanner.nextInt();
 
             BorrowService borrowService = new BorrowService();
@@ -143,7 +135,7 @@ public class UserInterface {
                     borrowingMenu = false;
                     break;
                 default:
-                    System.out.println("The entered option is incorrect.");
+                    Strings.enterOptionIncorrect();
             }
 
         }

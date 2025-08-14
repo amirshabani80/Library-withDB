@@ -164,20 +164,62 @@ public final class Strings {
         System.out.println("\n-----------------------------------------------------------\n" +
                 "Enter New information\n      ||      \nEnter The Name:");
     }
-    public static void enterStat(){
+
+    public static void enterStat() {
         System.out.println("Enter new status (AVAILABLE / NEEDREPARE / BORROW):");
     }
-    public static void failedBookUpdate(){
+
+    public static void failedBookUpdate() {
         System.out.println("Failed to update the Book!!");
     }
-    public static void successBookUpdate(){
+
+    public static void successBookUpdate() {
         System.out.println("Book updated successfully\n" +
                 "---------------------------------------------------------------");
     }
-    public static void delBookSuccess(){
+
+    public static void delBookSuccess() {
         System.out.println("Book deleted successfully");
     }
+
     public static void enterBookNorId() {
         System.out.println("Enter The Book name or ID");
     }
+    public static void enterOptionIncorrect() {
+        System.out.println("The entered option is incorrect.");
+    }
+    public static void borrowMenu(){
+        System.out.println("---------BORROWING---------- " +
+                "\n 1) Borrow a Book \n 2) Show Borrow List \n 3) returned Book \n" +
+                " 4) Show delayed books \n 5) Back to Main Menu"+
+                "\n---------------------------\n<<Enter The Menu Option Number>>");
+    }
+    public static void booksMenu(){
+        System.out.println("------------BOOKS-----------\n 1) Add  \n 2) Show Books list  \n 3) Edit " +
+                " \n 4) Delete  \n 5) Search Book \n 6) Back to Main Menu"+
+                "\n---------------------------\n<<Enter The Menu Option Number>>");
+    }
+    public static void memberMenu(){
+        System.out.println("------------MEMBERS-----------\n 1) Add  \n 2) Show Members list \n " +
+                "3) Edit  \n 4) Delete  \n 5) Search Member \n 6) Back to Main Menu"
+                +"\n---------------------------\n<<Enter The Menu Option Number>>");
+    }
+    public static void mainMenu(){
+        System.out.println("------------MAIN MENU-----------" +
+                "\n 1) Members Management \n 2) Books Management \n 3) Borrow Management \n 4) Exit"
+                +"\n---------------------------\n<<Enter The Menu Option Number>>");
+    }
+    public static void welcome(){
+        System.out.println("Welcome Boss");
+    }
+    public static void goodby(){
+        System.out.println("GOODBYE!!");
+    }
+    public static void passincorect(){
+        System.out.println("❌❌The entry password is incorrect❌❌");
+    }
+    public static void enterPass(){
+        System.out.println("🔐 Please Enter the password 🔐");
+    }
+
 }
